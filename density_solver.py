@@ -14,7 +14,6 @@ class ρcl:
         Δ*=2*np.pi # Transforming to angular frequency
         
         # Matrix elements defined here for legibility
-
         L3E2 = -1.j*(self.Δ2-Δ)+1/2*self.γ21
         L4E3 =  1.j*Δ+1/2*self.γ31
         L5E4 =  1.j*(self.Δ2-Δ)+1/2*self.γ21
@@ -24,11 +23,6 @@ class ρcl:
         a = 1/2*1.j*self.Ωp; b = 1/2*1.j*self.Ωc
 
         # (10x9) Matrix, overdetermined
-
-
-        # Defining two traces, one for the ordinary three-level system and one
-        # for the two-level limit
-
         ρdot = np.array([   [1,0,0,0,1,0,0,0,1],
                             [0,0,-a,0,0,0,a,0,-self.Γ31],
                             [0,L3E2,-b,0,0,0,0,a,0],
@@ -39,17 +33,14 @@ class ρcl:
                             [a,0,0,b,0,0,L7E8,0,-a],
                             [0,a,0,0,b,0,0,L7E9,-b],
                             [0,0,a,0,0,b,-a,-b,self.Γ3]]
-
                         ,dtype=complex)
 
-        RHS = np.array([1,0,0,0,0,0,0,0,0,0]) # Steady state solution with Tr(ρ)=1
+        RHS = np.array([1,0,0,0,0,0,0,0,0,0]) # Tr(ρ)=1 and steady state solution
 
-        # ρsol = np.linalg.lstsq(ρdot,RHS,rcond=None)[0] # Least squares solution
+        # ρsol = np.linalg.lstsq(ρdot,RHS,rcond=None)[0] # Least squares solution has similar execution time
         ρsol = np.dot(np.linalg.pinv(ρdot,1e-15),RHS) # Moore-Penrose pseudomatrix solution
-        # (of similar execution speed)
         
         # Enforce the density matrix to be exactly Hermitian 
-
         ρ11 = np.real(ρsol[0])
         ρ22 = np.real(ρsol[4])
         ρ33 = np.real(ρsol[8])
@@ -69,6 +60,8 @@ class ρcl:
     def plotρ(self,savefig,showplot):
 
         figsize = (12,5)
+
+        # LaTeX symbols are used for labels
 
         s=r'$\rho_{11}$'
         
@@ -90,17 +83,16 @@ class ρcl:
 
         if savefig: plt.savefig("elements/" + self.ρij + ".png"); 
         if showplot: plt.show()
-        
-        # plt.clf()
+
 
     def sweep_Δ1(self,ρid,fid):
         self.ρij=ρijs[ρid]; self.ρid=ρid; self.fid=fid
 
         # Sweeping over a range of single photon detunings and solving
 
-        Δmax = (self.Ωp+self.Ωc)
-        self.Δrange=np.linspace(-Δmax,Δmax,int(self.fid)+1)
-        self.ρΔid = np.array([self.ρsol(Δ)[self.ρid] for Δ in self.Δrange])
+        Δmax = (self.Ωp+self.Ωc) # This is an arbitrary choice
+        self.Δrange=np.linspace(-Δmax,Δmax,self.fid+1)
+        self.ρΔid = np.array([self.ρsol(Δ)[self.ρid] for Δ in self.Δrange]) # Array containing ρij solutions
 
     def __init__(self,Γ32,Γ31,γ3d,γ2d,Ωc,Ωp,Δ2):
 
