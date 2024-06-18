@@ -24,10 +24,10 @@ c = 299792458 # Speed of light (m/s)
 
 fid = int(1e4) # Program fidelity
 
-dc= 2e-3 # Control laser beam diameter (m)
-dp= 2e-3 # Control laser beam diameter (m)
-Ac = pi*(dc/2)**2 # Laser spot size of control (m^2)
-Ap = pi*(dp/2)**2 # Laser spot size of control (m^2)
+Dc= 2e-3 # Control laser beam diameter (m)
+Dp= 2e-3 # Control laser beam diameter (m)
+Ac = pi*(Dc/2)**2 # Laser spot size of control (m^2)
+Ap = pi*(Dp/2)**2 # Laser spot size of control (m^2)
 n = 1 # Average index of refraction
 Pc = 1.0e-3 # Control laser power (W)
 Pp = 20.0e-6 # Probe laser power (W)
